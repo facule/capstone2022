@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body id = "parent">
+	<!--<video id="video" width="800" src="test.mp4" autoplay muted loop></video>-->
+    <video id="video" width="800" src="../../../static/video/test.mp4" controls></video>
+    <script src="popup.js"></script>
+<br>
+
+<p>curTime: <span id="time"></span></p>
+<input type = "text" name = "test" id = "inputTime" />
+<input type="button" value="move" onclick="inputMove()" />
+
+<br>
+<input type="button" value="타임스탬프 생성" onclick="createtimeStp()" />
+<br>
+
+<script>
+
+var vid = document.getElementById("video");
+
+
+function curTime(){
+	var curtime = vid.currentTime;
+	return curtime;
+}
+  
+
+//현재 시간
+//ontimeupdate 재생위치가 변경 될 때마다 실행 
+vid.ontimeupdate = function() {
+	
+	curTime();
+	printTime();
+  };   
+  
+
+function printTime() {
+	document.getElementById("time").innerHTML = calcTime(curTime());
+} 
+
+//초변환
+function calcTime(time){
+	var hour = parseInt(time/3600) < 10 ? '0'+ parseInt(time/3600) : parseInt(time/3600); 
+	var min = parseInt((time%3600)/60) < 10 ? '0'+ parseInt((time%3600)/60) : parseInt((time%3600)/60); 
+	var sec0 = time % 60 < 10 ? '0'+time % 60 : time% 60;
+	var sec = Math.floor(sec0); //소수점 버림
+	var timeStp = hour+":"+min+":" + sec
+
+	return timeStp
+	
+}
+
+//타임스탬프 생성
+function createtimeStp() {	
+		var curtime = vid.currentTime;
+
+		let obj = document.getElementById("parent");
+		
+		let newA = document.createElement("a");
+		
+		var newAtext=document.createTextNode(calcTime(curtime));
+		newA.setAttribute("id", curtime);
+		newA.appendChild(newAtext);
+		
+		//줄바꿈
+		var br = document.createElement("br");
+		newA.appendChild(br);
+			
+		newA.href = "javascript:move("+newA.getAttribute('id')+");";
+	
+		obj.appendChild(newA);
+	}
+
+
+//시간 이동
+function inputMove() { 
+	var a =document.getElementById("inputTime").value;
+
+   	vid.currentTime=a;
+    vid.play();
+}
+
+function move(num) { 
+	
+
+   	vid.currentTime=num;
+    vid.play();
+} 
+
+
+
+</script> 
+	
+</body>
+</html>
